@@ -1,8 +1,7 @@
 import time
 import random
-# TODO: Add a wordbank that keeps track of your guesses. 
-# TODO: Add handling for if you guess a word you have already guessed. 
-# TODO: Add logic that allows you to guess with a capital or lowercase letter or word. 
+
+#  
 # TODO: Refactor play_again() to have simpler logic. 
 
 def greeting():
@@ -16,6 +15,7 @@ def pick_word():
     word_list = word_file.readlines()
     word = word_list[random.randrange(11117)].capitalize().strip()
     word_file.close()
+    word = word.upper()
     print('Choosing a word...')
     time.sleep(3)
     return word
@@ -35,9 +35,14 @@ def gameplay():
     guesses = 0
     while guesses < 5:
         print('You have ' + str(5 - guesses) + ' guesses remaining.')
-        guess = input('Enter your guess:\n')
+        print(f'Past guesses: {guessed_letters}')
+        guess = input('Enter your guess:\n').upper()
+        if guess in guessed_letters:
+            print("You've already guessed that! Try again.")
+            time.sleep(1)
+            continue
         if guess == word:
-            print(f'Congratulations! You solved the puzzle with {guesses} remaining.')
+            print('Congratulations! You solved the puzzle with ' + str(5-guesses) +  ' guesses remaining.')
             time.sleep(3)
             break
         elif guess in word:
@@ -50,6 +55,8 @@ def gameplay():
             print(current_hint)
         else:
             print('Wrong!')
+            time.sleep(1)
+            guessed_letters = guessed_letters + guess
             guesses = guesses + 1
     if guesses == 5:
         print(f'Out of guesses! The word was {word}')
@@ -63,6 +70,7 @@ def create_hint(full_word, letters):
             hint = hint + x
         else:
             hint = hint + '_'
+    hint = hint.capitalize()
     return hint
 
 def play_again():
